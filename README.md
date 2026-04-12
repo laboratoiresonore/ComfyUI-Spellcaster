@@ -88,4 +88,4 @@ Drag these into ComfyUI to get started:
 
 ## License
 
-MIT
+NOPE - Free Software 
