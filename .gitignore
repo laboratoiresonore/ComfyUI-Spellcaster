@@ -10,3 +10,10 @@ build/
 venv/
 .idea/
 .vscode/
+
+# MCP config (contains API keys)
+.mcp.json
+gemini-output/
+
+# Claude Code internal files
+.claude/
