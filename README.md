@@ -1,5 +1,10 @@
 # ComfyUI-Spellcaster
 
+[![License](https://img.shields.io/github/license/laboratoiresonore/ComfyUI-Spellcaster)](LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/laboratoiresonore/ComfyUI-Spellcaster?include_prereleases&sort=semver)](https://github.com/laboratoiresonore/ComfyUI-Spellcaster/releases)
+[![GitHub stars](https://img.shields.io/github/stars/laboratoiresonore/ComfyUI-Spellcaster?style=flat)](https://github.com/laboratoiresonore/ComfyUI-Spellcaster/stargazers)
+[![ComfyUI](https://img.shields.io/badge/ComfyUI-custom%20nodes-5b8def)](https://github.com/comfyanonymous/ComfyUI)
+
 Architecture-aware nodes for AI image generation. Auto-detects your model architecture (SD 1.5, SDXL, Illustrious, ZIT, Flux Dev, Flux 2 Klein, Chroma), loads the correct CLIP and VAE, enhances prompts via local LLM, and samples with optimal settings — all automatically.
 
 Part of the [Spellcaster](https://github.com/laboratoiresonore/spellcaster) ecosystem. ONE SOURCE OF TRUTH: the same architecture definitions power the GIMP plugin, Darktable plugin, and Wizard Guild.

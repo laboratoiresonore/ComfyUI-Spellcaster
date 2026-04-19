@@ -1,0 +1,36 @@
+name: Feature request
+description: Suggest a new architecture, sampler preset, or node capability
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the gap in the current nodes. What are you trying to do that doesn't work cleanly today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What new behavior, input, or node would solve it?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area?
+      multiple: true
+      options:
+        - New architecture support
+        - Loader (auto-detection / CLIP / VAE)
+        - Prompt Enhance (LLM backends, tag styles)
+        - Sampler (new scheduler / guider)
+        - Output (new format, metadata options)
+        - Docs / examples
+        - Other
+    validations:
+      required: true

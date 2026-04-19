@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Spellcaster (desktop apps — GIMP plugin, Wizard Guild, Darktable)
+    url: https://github.com/laboratoiresonore/spellcaster/issues
+    about: If your issue is with the GIMP plugin, the Wizard Guild chat UI, or the installer, file it on the main Spellcaster repo.
+  - name: ComfyUI itself
+    url: https://github.com/comfyanonymous/ComfyUI/issues
+    about: Bugs in ComfyUI core (not these custom nodes) belong upstream.

@@ -1,0 +1,98 @@
+name: Bug report
+description: Report a problem with a Spellcaster node
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in the info below — workflow JSON and exact error text are the two most important things.
+
+  - type: dropdown
+    id: node
+    attributes:
+      label: Which node is affected?
+      options:
+        - Spellcaster Loader (Auto-Arch)
+        - Spellcaster Prompt Enhance (LLM)
+        - Spellcaster Sampler (Auto-Config)
+        - Spellcaster Output (Privacy)
+        - Multiple / unsure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Model architecture
+      options:
+        - SD 1.5
+        - SDXL
+        - Illustrious
+        - ZIT (turbo)
+        - Flux 1 Dev
+        - Flux 2 Klein
+        - Flux Kontext
+        - Chroma
+        - Unsure / not applicable
+    validations:
+      required: true
+
+  - type: input
+    id: model_file
+    attributes:
+      label: Model filename
+      description: The exact filename of the model checkpoint or UNET you were loading
+      placeholder: e.g. flux2-klein-9b-bf16.safetensors
+    validations:
+      required: false
+
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: Describe the bug. What did you expect? What did you see instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: error_text
+    attributes:
+      label: Error text or ComfyUI console output
+      description: Paste the full Python traceback or ComfyUI console output. Do not redact paths — they help debugging.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow JSON
+      description: Drag-drop your `.json` workflow into this field, or paste its contents. Minimal reproductions are best.
+      render: json
+    validations:
+      required: false
+
+  - type: input
+    id: comfyui_version
+    attributes:
+      label: ComfyUI version / commit
+      description: Run `git rev-parse --short HEAD` in your ComfyUI directory
+    validations:
+      required: false
+
+  - type: input
+    id: spellcaster_version
+    attributes:
+      label: ComfyUI-Spellcaster version / commit
+      description: Tag or commit hash
+    validations:
+      required: false
+
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU / VRAM
+      placeholder: e.g. RTX 4090 24GB
+    validations:
+      required: false

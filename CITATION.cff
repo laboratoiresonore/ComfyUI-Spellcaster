@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use ComfyUI-Spellcaster in your work, please cite it as below."
+title: "ComfyUI-Spellcaster: Architecture-aware nodes for AI image generation"
+abstract: >
+  A set of ComfyUI custom nodes that auto-detect model architecture
+  (SD 1.5, SDXL, Illustrious, ZIT, Flux Dev, Flux 2 Klein, Chroma, Flux Kontext),
+  load the correct CLIP and VAE, enhance prompts via local LLM,
+  and sample with architecture-optimal settings.
+authors:
+  - name: "Le Laboratoire Sonore"
+repository-code: "https://github.com/laboratoiresonore/ComfyUI-Spellcaster"
+license: "LicenseRef-NOPE"
+type: software
+keywords:
+  - comfyui
+  - stable-diffusion
+  - flux
+  - diffusion-models
+  - text-to-image
