@@ -10,6 +10,6 @@ Repository = "https://github.com/laboratoiresonore/ComfyUI-Spellcaster"
 Issues = "https://github.com/laboratoiresonore/ComfyUI-Spellcaster/issues"
 
 [tool.comfy]
-PublisherId = "laboratoiresonore"
+PublisherId = "lelaboratoiresonore"
 DisplayName = "Spellcaster Nodes"
 Icon = ""
