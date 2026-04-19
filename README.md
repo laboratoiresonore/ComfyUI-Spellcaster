@@ -1,5 +1,6 @@
 # ComfyUI-Spellcaster
 
+[![Comfy Registry](https://img.shields.io/badge/ComfyUI%20Registry-Spellcaster%20Nodes-5b8def)](https://registry.comfy.org/nodes/comfyui-spellcaster)
 [![License](https://img.shields.io/github/license/laboratoiresonore/ComfyUI-Spellcaster)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/laboratoiresonore/ComfyUI-Spellcaster?include_prereleases&sort=semver)](https://github.com/laboratoiresonore/ComfyUI-Spellcaster/releases)
 [![GitHub stars](https://img.shields.io/github/stars/laboratoiresonore/ComfyUI-Spellcaster?style=flat)](https://github.com/laboratoiresonore/ComfyUI-Spellcaster/stargazers)
@@ -56,7 +57,13 @@ VAE decode + save with metadata stripping enabled by default.
 
 ### ComfyUI Manager (recommended)
 
-Search for **"Spellcaster"** in ComfyUI Manager and click Install.
+Search for **"Spellcaster"** in ComfyUI Manager and click Install. ComfyUI Manager pulls directly from the [ComfyUI Registry listing](https://registry.comfy.org/nodes/comfyui-spellcaster).
+
+### Comfy CLI
+
+```bash
+comfy node install comfyui-spellcaster
+```
 
 ### Manual (git clone)
 
