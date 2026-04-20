@@ -236,7 +236,20 @@ class NodeFactory:
     def lora_loader_model_only(self, model_ref, lora_name,
                                strength_model=1.0, node_id=None):
         """LoraLoaderModelOnly — applies LoRA to model only (no CLIP).
+
         Outputs: [0]=MODEL
+
+        **This is the canonical path for WAN/LTX LoRA injection**
+        (CLAUDE.md §16.4 rule #5). Video builders (`build_wan_video`,
+        `build_wan_flf`, `build_wan22_t2v`) call this helper directly
+        rather than going through `composites.inject_lora_chain`,
+        because the arch-family filter in `inject_lora_chain` is
+        tuned for image models (SDXL / Flux / Klein / Chroma / …)
+        and would DROP WAN-specific LoRAs (lightx2v, lightning_i2v,
+        LoRAs tagged with the "wan" arch). For video, the caller is
+        explicitly in charge of picking compatible LoRAs (usually
+        via `video_presets.pick_wan_accel_loras`), so filter-bypass
+        is intentional.
         """
         return self._add("LoraLoaderModelOnly", {
             "model": model_ref,
@@ -656,6 +669,98 @@ class NodeFactory:
         """
         return self._add("ModelSamplingSD3",
                          {"model": model_ref, "shift": shift}, node_id)
+
+    # ═══════════════════════════════════════════════════════════════════
+    #  CORE QUALITY BOOSTERS
+    # ═══════════════════════════════════════════════════════════════════
+    # These nodes ship with ComfyUI core (no custom-pack dependency)
+    # and improve output quality at modest compute cost. They're wired
+    # selectively per architecture by composites._apply_quality_boost.
+
+    def perturbed_attention_guidance(self, model_ref, scale=3.0, node_id=None):
+        """PerturbedAttentionGuidance (PAG) — improves coherence/detail
+        by perturbing self-attention during the guidance branch.
+        Safe on SDXL, SD1.5 (less effective), Flux 1 Dev, Chroma.
+        Interferes with Klein custom-sampler; do not wire on Klein.
+        Outputs: [0]=MODEL
+        """
+        return self._add("PerturbedAttentionGuidance",
+                         {"model": model_ref, "scale": scale}, node_id)
+
+    def rescale_cfg(self, model_ref, multiplier=0.7, node_id=None):
+        """RescaleCFG — counteracts saturation/burn at high CFG by
+        rescaling the guidance-predicted latent toward the
+        unconditional prediction. Use when cfg >= 7.5.
+        Outputs: [0]=MODEL
+        """
+        return self._add("RescaleCFG",
+                         {"model": model_ref, "multiplier": multiplier}, node_id)
+
+    def freeu_v2(self, model_ref, b1=1.3, b2=1.4, s1=0.9, s2=0.2,
+                  node_id=None):
+        """FreeU_V2 — reweights skip connections in the U-Net for
+        sharper details at no extra cost. SDXL-tuned defaults
+        (b1=1.3, b2=1.4, s1=0.9, s2=0.2). NOT for Flux (no U-Net).
+        Outputs: [0]=MODEL
+        """
+        return self._add("FreeU_V2", {
+            "model": model_ref, "b1": b1, "b2": b2, "s1": s1, "s2": s2,
+        }, node_id)
+
+    def model_sampling_flux(self, model_ref, max_shift=1.15, base_shift=0.5,
+                             width=1024, height=1024, node_id=None):
+        """ModelSamplingFlux — Flux-specific per-resolution shift for
+        the noise schedule. Produces better detail than the generic
+        ModelSamplingSD3 wrap on Flux 1 Dev / Kontext.
+        Outputs: [0]=MODEL
+        """
+        return self._add("ModelSamplingFlux", {
+            "model": model_ref, "max_shift": max_shift,
+            "base_shift": base_shift, "width": width, "height": height,
+        }, node_id)
+
+    def skip_layer_guidance_dit(self, model_ref, *,
+                                   double_layers="7, 8, 9",
+                                   single_layers="7, 8, 9",
+                                   scale=3.0,
+                                   start_percent=0.01,
+                                   end_percent=0.15,
+                                   rescaling_scale=0.0,
+                                   node_id=None):
+        """SkipLayerGuidanceDiT — SLG for Flux 1 Dev / Kontext / SD3.
+
+        Drops specific transformer blocks from the guidance branch to
+        bias the final output toward cleaner detail / better anatomy.
+        Core ComfyUI since 2024. Only useful on DiT architectures
+        (Flux 1 Dev, Flux Kontext, SD3). Do NOT wire on SD1/SDXL/Klein.
+
+        Community-tested Flux defaults (scale=3.0, layers 7-9, first
+        15% of sampling) are used; all overridable per call site.
+
+        Outputs: [0]=MODEL
+        """
+        return self._add("SkipLayerGuidanceDiT", {
+            "model": model_ref,
+            "double_layers": double_layers,
+            "single_layers": single_layers,
+            "scale": scale,
+            "start_percent": start_percent,
+            "end_percent": end_percent,
+            "rescaling_scale": rescaling_scale,
+        }, node_id)
+
+    def align_your_steps_scheduler(self, model_type="SDXL", steps=20,
+                                     denoise=1.0, node_id=None):
+        """AlignYourStepsScheduler (AYS) — NVIDIA paper sigmas targeted
+        at SD1/SDXL. Produces meaningfully better output than Karras at
+        low step counts (8-12); parity at 20+. Only works on sd15/sdxl
+        (and illustrious which IS sdxl). model_type must be "SD1" or
+        "SDXL"; "SVD" exists but Spellcaster doesn't do SVD.
+        Outputs: [0]=SIGMAS — wire to SamplerCustomAdvanced.sigmas.
+        """
+        return self._add("AlignYourStepsScheduler", {
+            "model_type": model_type, "steps": steps, "denoise": denoise,
+        }, node_id)
 
     # ═══════════════════════════════════════════════════════════════════
     #  FLUX2KLEIN-ENHANCER (OPTIONAL — from Sarcastic TOFU node pack)
