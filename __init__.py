@@ -30,10 +30,22 @@ from .nodes.output import SpellcasterOutput
 # Guild to be running. See AUDIT_CROSS_APP_DISCOVERY.md §6.5.
 from . import presence as _presence
 
-# Blob bus — Guild-less asset transport. Any plugin POSTs bytes to
-# /spellcaster/blob/put; peers GET directly from ComfyUI. TTL-based
-# eviction keeps disk bounded.
+# Blob bus — Guild-less asset transport. Any plugin can POST bytes to
+# /spellcaster/blob/put and hand the returned URL to peers; they GET
+# directly from ComfyUI without the Guild being on the critical path.
+# TTL-based eviction; 256 MB/blob, 2 GB aggregate.
 from . import blob_bus as _blob_bus
+
+# Privacy-cleanup HTTP route — real os.remove() against ComfyUI's
+# input / output / temp directories (NOT the old "overwrite with a
+# 1x1 PNG via /upload/image" path, which silently failed for
+# outputs because /upload/image ALWAYS writes to input/). Callers
+# POST to /spellcaster/privacy/delete with a filename list + folder
+# hint; the module whitelists Spellcaster-owned prefixes + refuses
+# path traversal before any unlink fires. See privacy_cleanup.py
+# for the safety guarantees.
+from . import privacy_cleanup as _privacy_cleanup
+_privacy_cleanup.is_available()
 
 
 NODE_CLASS_MAPPINGS = {
