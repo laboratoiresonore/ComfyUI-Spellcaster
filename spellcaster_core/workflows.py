@@ -1658,7 +1658,7 @@ def _assert_method(arch_key: str, method: str) -> None:
     if not arch_key or not method:
         return
     try:
-        from spellcaster_core.architectures import ARCHITECTURES
+        from .architectures import ARCHITECTURES
     except ImportError:
         try:
             from architectures import ARCHITECTURES  # type: ignore
@@ -1706,7 +1706,7 @@ def _faceswap_guard(feature: str) -> None:
     the wrapper in this module avoids every builder needing its own
     try/except for the import."""
     try:
-        from spellcaster_core.faceswap_health import guard_faceswap
+        from .faceswap_health import guard_faceswap
     except ImportError:
         try:
             from faceswap_health import guard_faceswap  # type: ignore

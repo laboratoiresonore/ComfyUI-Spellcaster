@@ -13,7 +13,7 @@ NOT routed through this: comfyui_llm.py text generation (the LLM IS the model
 being evicted by free_vram — routing it here would be circular).
 
 USAGE:
-    from spellcaster_core.dispatch import dispatch_workflow
+    from .dispatch import dispatch_workflow
 
     result = dispatch_workflow(
         "http://192.168.x.x:8188", workflow,
