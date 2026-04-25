@@ -56,11 +56,50 @@ from . import model_repair as _model_repair
 _model_repair.is_available()
 
 
+# ── the private downstream distribution optional add-on ────────────────────────────────────
+# the private downstream distribution is a Spellcaster-derived privacy-first GIMP fork. When
+# the user runs the private downstream distribution + has provisioned an auth token here, an
+# ENCRYPTED dispatch pipeline activates (V1W ChaCha20-Poly1305 wire
+# envelope on every input + output, no plaintext on disk).
+#
+# For regular Spellcaster users without a token at <pack>/.auth_token
+# (or PRIVATE_AUTH_TOKEN env var), these nodes + routes are
+# DORMANT — they exist in the registry but raise a clear
+# setup-instructions error if invoked. Zero impact on existing
+# workflows.
+#
+# To activate: run the private downstream distribution's GIMP plug-in setup wizard, then
+# POST your client-side ~/.spellcaster/auth_token to
+# /private-pipeline/setup (one-time, single-use). Or copy the token to
+# <pack>/.auth_token manually.
+try:
+    from .private_crypto_nodes import (
+        PrivateDecryptLoadImage,
+        PrivateEncryptSaveImage,
+        NODE_CLASS_MAPPINGS as _PRIVATE_NODES,
+        NODE_DISPLAY_NAME_MAPPINGS as _PRIVATE_DISPLAY,
+    )
+    from . import private_version_route as _private_version
+    from . import private_setup_route as _private_setup
+    _private_version.is_available()
+    _private_setup.is_available()
+    _PRIVATE_LOADED = True
+except Exception as _private_exc:
+    # Pack still works fine for regular Spellcaster users — the
+    # private extras just don't register.
+    _PRIVATE_NODES = {}
+    _PRIVATE_DISPLAY = {}
+    _PRIVATE_LOADED = False
+    print(f"[ComfyUI-Spellcaster] private-pipeline extras skipped: "
+          f"{_private_exc}")
+
+
 NODE_CLASS_MAPPINGS = {
     "SpellcasterLoader": SpellcasterLoader,
     "SpellcasterPromptEnhance": SpellcasterPromptEnhance,
     "SpellcasterSampler": SpellcasterSampler,
     "SpellcasterOutput": SpellcasterOutput,
+    **_PRIVATE_NODES,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -68,6 +107,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "SpellcasterPromptEnhance": "Spellcaster Prompt Enhance (LLM)",
     "SpellcasterSampler": "Spellcaster Sampler (Auto-Config)",
     "SpellcasterOutput": "Spellcaster Output (Privacy)",
+    **_PRIVATE_DISPLAY,
 }
 
 WEB_DIRECTORY = "./web"
