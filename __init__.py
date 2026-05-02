@@ -56,22 +56,22 @@ from . import model_repair as _model_repair
 _model_repair.is_available()
 
 
-# ── the private downstream distribution optional add-on ────────────────────────────────────
-# the private downstream distribution is a Spellcaster-derived privacy-first GIMP fork. When
-# the user runs the private downstream distribution + has provisioned an auth token here, an
-# ENCRYPTED dispatch pipeline activates (V1W ChaCha20-Poly1305 wire
-# envelope on every input + output, no plaintext on disk).
+# ── Private add-on (optional) ────────────────────────────────────────
+# Private downstream distributions can ship a companion GIMP plug-in
+# that talks to this pack over an ENCRYPTED dispatch pipeline (V1W
+# ChaCha20-Poly1305 wire envelope on every input + output, no
+# plaintext on disk).
 #
 # For regular Spellcaster users without a token at <pack>/.auth_token
-# (or PRIVATE_AUTH_TOKEN env var), these nodes + routes are
-# DORMANT — they exist in the registry but raise a clear
+# (or SPELLCASTER_PRIVATE_AUTH_TOKEN env var), these nodes + routes
+# are DORMANT — they exist in the registry but raise a clear
 # setup-instructions error if invoked. Zero impact on existing
 # workflows.
 #
-# To activate: run the private downstream distribution's GIMP plug-in setup wizard, then
-# POST your client-side ~/.spellcaster/auth_token to
-# /private-pipeline/setup (one-time, single-use). Or copy the token to
-# <pack>/.auth_token manually.
+# To activate: run the private add-on's GIMP plug-in setup wizard,
+# then POST your client-side ~/.spellcaster/auth_token to
+# /spellcaster/private/setup (one-time, single-use). Or copy the
+# token to <pack>/.auth_token manually.
 try:
     from .private_crypto_nodes import (
         PrivateDecryptLoadImage,
@@ -90,7 +90,7 @@ except Exception as _private_exc:
     _PRIVATE_NODES = {}
     _PRIVATE_DISPLAY = {}
     _PRIVATE_LOADED = False
-    print(f"[ComfyUI-Spellcaster] private-pipeline extras skipped: "
+    print(f"[ComfyUI-Spellcaster] private add-on extras skipped: "
           f"{_private_exc}")
 
 

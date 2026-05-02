@@ -1,4 +1,4 @@
-"""the private downstream distribution server-side crypto nodes.
+"""Private add-on server-side crypto nodes.
 
 Closes the on-server plaintext window: input bytes arrive AEAD-wrapped
 in a V1W envelope, get decrypted in RAM, the workflow runs, and the
@@ -6,13 +6,13 @@ output is re-encrypted before SaveImage. Result: at no point does a
 plaintext PNG sit on the server's disk.
 
 Pair with the client-side `_ai_helper.py` workflow rewriter that
-detects these nodes via `/private-pipeline/version` and substitutes them
-for `LoadImage` / `SaveImage` automatically.
+detects these nodes via `/spellcaster/private/version` and substitutes
+them for `LoadImage` / `SaveImage` automatically.
 
 Auth-token resolution:
   1. `~/.spellcaster/auth_token` on the SERVER's filesystem (preferred —
      the user runs a one-time setup that writes this file).
-  2. `PRIVATE_AUTH_TOKEN` env var (CI / containerized deploys).
+  2. `SPELLCASTER_PRIVATE_AUTH_TOKEN` env var (CI / containerized deploys).
   3. Fail with a clear error pointing to the setup step.
 
 The token is the same one the client uses for derive_key(); we both
@@ -32,7 +32,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from .private-pipeline_privacy import wire_envelope
+from .private_pipeline import wire_envelope
 
 
 _TOKEN_CACHE: bytes | None = None
@@ -42,7 +42,7 @@ def _resolve_auth_token() -> bytes:
     """Find the auth token on the server. Cached after first read.
     Lookup order:
       1. ~/.spellcaster/auth_token (POSIX-canonical)
-      2. PRIVATE_AUTH_TOKEN env var
+      2. SPELLCASTER_PRIVATE_AUTH_TOKEN env var
       3. <pack_dir>/.auth_token (deployed by Update_ComfyUI.exe — the
          normal path for cross-machine LAN setups where the user
          doesn't want to fiddle with the server's home dir)
@@ -60,7 +60,7 @@ def _resolve_auth_token() -> bytes:
             return token
 
     # 2. Env var.
-    env_tok = os.environ.get("PRIVATE_AUTH_TOKEN", "").strip()
+    env_tok = os.environ.get("SPELLCASTER_PRIVATE_AUTH_TOKEN", "").strip()
     if env_tok:
         _TOKEN_CACHE = env_tok.encode("utf-8")
         return _TOKEN_CACHE
@@ -75,10 +75,10 @@ def _resolve_auth_token() -> bytes:
             return token
 
     raise RuntimeError(
-        f"the private downstream distribution auth token not found.\n\n"
+        f"Private add-on auth token not found.\n\n"
         f"Looked for (in order):\n"
         f"  1. {p}\n"
-        f"  2. PRIVATE_AUTH_TOKEN env var\n"
+        f"  2. SPELLCASTER_PRIVATE_AUTH_TOKEN env var\n"
         f"  3. {pack_local}\n\n"
         f"Run Update_ComfyUI.exe on your CLIENT machine to deploy the\n"
         f"token automatically, OR copy your client-side\n"
@@ -108,7 +108,7 @@ def _tensor_to_pil(t: torch.Tensor) -> Image.Image:
     return Image.fromarray(arr, mode="RGB")
 
 
-# ─── PrivateDecryptLoadImage ─────────────────────────────────────────
+# ─── PrivateDecryptLoadImage ────────────────────────────────────────
 
 class PrivateDecryptLoadImage:
     """Replaces LoadImage when the client uploaded a wire-encrypted
@@ -131,7 +131,7 @@ class PrivateDecryptLoadImage:
 
     RETURN_TYPES = ("IMAGE", "MASK")
     RETURN_NAMES = ("image", "mask")
-    CATEGORY    = "private-pipeline/crypto"
+    CATEGORY    = "spellcaster/private/crypto"
     FUNCTION    = "load"
 
     def load(self, encrypted_b64: str):
@@ -175,7 +175,7 @@ class PrivateDecryptLoadImage:
         return (_pil_to_tensor(im), mask)
 
 
-# ─── PrivateEncryptSaveImage ─────────────────────────────────────────
+# ─── PrivateEncryptSaveImage ────────────────────────────────────────
 
 class PrivateEncryptSaveImage:
     """Replaces SaveImage. Encodes the image as PNG, wraps in a V1W
@@ -204,7 +204,7 @@ class PrivateEncryptSaveImage:
 
     RETURN_TYPES = ()
     OUTPUT_NODE  = True
-    CATEGORY     = "private-pipeline/crypto"
+    CATEGORY     = "spellcaster/private/crypto"
     FUNCTION     = "save"
 
     def save(self, images, filename_prefix: str = "private_enc",
@@ -260,6 +260,6 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "PrivateDecryptLoadImage": "✧ PrivateDecrypt Load Image",
-    "PrivateEncryptSaveImage": "✧ PrivateEncrypt Save Image",
+    "PrivateDecryptLoadImage": "✧ Private Decrypt Load Image",
+    "PrivateEncryptSaveImage": "✧ Private Encrypt Save Image",
 }

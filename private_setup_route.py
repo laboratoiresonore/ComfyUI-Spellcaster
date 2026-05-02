@@ -1,6 +1,6 @@
-"""POST /private-pipeline/setup — single-use auth token receiver.
+"""POST /spellcaster/private/setup — single-use auth token receiver.
 
-The the private downstream distribution GIMP plugin posts its auth token here ONCE on first
+The downstream GIMP plugin posts its auth token here ONCE on first
 contact with a freshly-installed pack. The token gets written to
 <pack_dir>/.auth_token (where _resolve_auth_token() finds it) and a
 .setup_done marker is created.
@@ -32,7 +32,7 @@ SETUP_MARKER  = _HERE / ".setup_done"
 def _handle(body: dict) -> tuple[int, dict]:
     if SETUP_MARKER.is_file():
         return 409, {"ok": False,
-                     "error": ("private-pipeline pack is already configured. "
+                     "error": ("private add-on pack is already configured. "
                                 "Delete .setup_done from the pack dir to "
                                 "re-provision.")}
     token = (body.get("auth_token") or "").strip()
@@ -72,7 +72,7 @@ def _register_routes() -> bool:
     if routes is None:
         return False
 
-    @routes.post("/private-pipeline/setup")
+    @routes.post("/spellcaster/private/setup")
     async def _setup(request):
         try:
             body = await request.json()

@@ -1,4 +1,4 @@
-"""the private downstream distribution end-to-end workflow envelope.
+"""End-to-end workflow wire envelope.
 
 Used for both transport (plug-in -> server upload / server -> plug-in
 download) AND at-rest (files sit on the server's disk encrypted;
@@ -127,7 +127,7 @@ def unwrap(envelope: bytes, key: bytes,
     if envelope[:MAGIC_LEN] != MAGIC:
         raise WireError(
             f"bad magic {envelope[:MAGIC_LEN]!r} -- not a "
-            "the private downstream distribution wire envelope")
+            "private wire envelope")
     header = envelope[:HEADER_LEN]
     kind = envelope[4]
     nonce = envelope[8:20]
@@ -154,7 +154,7 @@ def is_wrapped(data: bytes) -> bool:
 
 if __name__ == "__main__":
     import io
-    tok = b"private-pipeline-wire-dev-token-long-enough-for-selftest-pass"
+    tok = b"private-wire-dev-token-long-enough-for-selftest-pass"
     key = derive_key(tok)
     for kind in (KIND_IMAGE, KIND_VIDEO, KIND_RAW):
         body = os.urandom(4096)

@@ -1,6 +1,6 @@
-"""HTTP route: GET /private-pipeline/version
+"""HTTP route: GET /spellcaster/private/version
 
-Lets the GIMP plug-in detect what the private downstream distribution-specific server-side
+Lets the GIMP plug-in detect what private add-on server-side
 features are available, so it can opt into the encrypted-input /
 encrypted-output workflow paths only when the pack is present.
 
@@ -17,8 +17,7 @@ Response shape:
 }
 
 The GIMP plug-in's `_inline.probe` action already checks for inline
-transport (ETN_LoadImageBase64); this is its the private downstream distribution-specific
-companion.
+transport (ETN_LoadImageBase64); this is its private-add-on companion.
 """
 from __future__ import annotations
 
@@ -31,14 +30,14 @@ PACK_VERSION = "0.1.0"
 def _auth_token_present() -> bool:
     if (Path.home() / ".spellcaster" / "auth_token").is_file():
         return True
-    if os.environ.get("PRIVATE_AUTH_TOKEN", "").strip():
+    if os.environ.get("SPELLCASTER_PRIVATE_AUTH_TOKEN", "").strip():
         return True
     return False
 
 
 def _build_status() -> dict:
     try:
-        from .private-pipeline_privacy import wire_envelope as _we
+        from .private_pipeline import wire_envelope as _we
         wire_v1 = True
         wire_using_pure = bool(getattr(_we, "_USING_PURE_FALLBACK", False))
     except Exception as exc:
@@ -80,7 +79,7 @@ def _register_routes() -> bool:
     if routes is None:
         return False
 
-    @routes.get("/private-pipeline/version")
+    @routes.get("/spellcaster/private/version")
     async def _version(request):
         return web.json_response(_build_status())
 
