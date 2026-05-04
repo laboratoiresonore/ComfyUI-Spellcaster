@@ -17,7 +17,7 @@ jobs:
     if: ${{ github.repository_owner == 'laboratoiresonore' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Publish to Comfy Registry
         uses: Comfy-Org/publish-node-action@v1
         with:
