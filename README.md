@@ -112,6 +112,6 @@ These nodes are extracted from [**Spellcaster**](https://github.com/laboratoires
 
 - 🪄 [**Spellcaster**](https://github.com/laboratoiresonore/spellcaster) — AI image generation, hidden behind one menu
 - 🔧 [**ComfyUI-Spellcaster**](https://github.com/laboratoiresonore/ComfyUI-Spellcaster) — these architecture-aware nodes (this repo)
-- 🎚️ [**BeatWeaver**](https://github.com/laboratoiresonore/beatweaver) — DJ overlay tool for non-musicians (BPM + key auto-detect, MIDI controller integration)
+- 🎚️ [**BeatWeaver**](https://github.com/laboratoiresonore/beatweaver) — DJ overlay tool for non-musicians (BPM + key auto-detect, MIDI controller integration, bundled offline neural voice via Piper TTS)
 
 Open-source when we can, always local. 
