@@ -55,7 +55,17 @@ VAE decode + save with metadata stripping enabled by default.
 
 ## Install
 
-### ComfyUI Manager (recommended)
+### Universal installer one-liner
+
+If you have Python 3.10+, the fastest path is the LaboratoireSonore Universal Installer:
+
+```bash
+python install.py
+```
+
+`install.py` at the repo root is a thin shim for the [LaboratoireSonore Universal Installer](https://github.com/laboratoiresonore/laboratoiresonore). It fetches the latest installer, picks the right artifact for your platform, and drops the node pack into your ComfyUI `custom_nodes/` directory.
+
+### ComfyUI Manager (recommended for ComfyUI users)
 
 Search for **"Spellcaster"** in ComfyUI Manager and click Install. ComfyUI Manager pulls directly from the [ComfyUI Registry listing](https://registry.comfy.org/nodes/comfyui-spellcaster).
 
