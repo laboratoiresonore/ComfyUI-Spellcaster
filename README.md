@@ -116,7 +116,7 @@ NOPE - Free Software
 
 ## Part of the Laboratoire Sonore ecosystem
 
-These nodes are extracted from [**Spellcaster**](https://github.com/laboratoiresonore/spellcaster) — the GIMP / Darktable / DaVinci Resolve / chat-UI plug-in suite that hides 24 ComfyUI custom-node packs and 9 architectures behind 69 one-click tools. Same architecture definitions power both the plug-in and these nodes — one source of truth, two deployments.
+These nodes are extracted from [**Spellcaster**](https://github.com/laboratoiresonore/spellcaster) — the GIMP / Darktable / DaVinci Resolve / chat-UI plug-in suite that hides 24 ComfyUI custom-node packs and 8 architectures behind 69 one-click tools. Same architecture definitions power both the plug-in and these nodes — one source of truth, two deployments.
 
 [Le Laboratoire Sonore](https://github.com/laboratoiresonore) maintains three public projects:
 
