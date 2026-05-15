@@ -55,6 +55,13 @@ _privacy_cleanup.is_available()
 from . import model_repair as _model_repair
 _model_repair.is_available()
 
+# Unified pack-version handshake — single GET that surfaces pack
+# version, subsystem availability + security posture in one round-trip.
+# Caps composers (Voodoomaster's /v1/capabilities) bind against this
+# instead of probing each subsystem separately. See
+# pack_version_route.py for the schema.
+from . import pack_version_route as _pack_version
+
 
 # ── Private add-on (optional) ────────────────────────────────────────
 # Private downstream distributions can ship a companion GIMP plug-in
@@ -273,12 +280,25 @@ try:
 except Exception as _e:
     _blob_ok = False
     print(f"[Spellcaster] blob bus disabled: {_e}")
+# Unified version endpoint is installed AFTER the subsystems above so
+# its manifest reflects the live registration state. Failures here
+# don't take down the rest of the pack.
+try:
+    _pack_ver_ok = _pack_version.is_available()
+except Exception as _e:
+    _pack_ver_ok = False
+    print(f"[Spellcaster] unified version endpoint disabled: {_e}")
 
 _extras = []
 if _presence_ok:
     _extras.append("presence broker ON")
 if _blob_ok:
-    _extras.append("blob bus ON")
+    if getattr(_blob_bus, "LOCALHOST_ONLY", False):
+        _extras.append("blob bus ON (localhost-only)")
+    else:
+        _extras.append("blob bus ON")
+if _pack_ver_ok:
+    _extras.append("/spellcaster/version handshake ON")
 _extras_str = ("  •  " + "  •  ".join(_extras)) if _extras else ""
 
 # Single-line startup banner. No ANSI colors (Windows cmd.exe without
