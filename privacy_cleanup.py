@@ -54,6 +54,14 @@ SAFE_DEFAULT_PREFIXES = (
     # owner, deliberately exempt from per-workflow wipe (see
     # privacy.CACHE_PREFIXES) but fair game for explicit delete.
     "sc_nmauto_",
+    # private_enc_ — encrypted-save-image output prefix from
+    # PrivateEncryptSaveImage. Still Spellcaster-owned; matches its
+    # own prefix so plugins can wipe encrypted-pipeline artifacts
+    # without knowing the wider naming convention. The bytes on disk
+    # are V1W envelopes (already unreadable without the auth token),
+    # so this is belt-and-suspenders cleanup rather than the only
+    # defence.
+    "private_enc_",
 )
 
 
